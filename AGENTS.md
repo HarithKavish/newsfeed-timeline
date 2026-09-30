@@ -61,6 +61,14 @@ as a wire format, not as ordinary Kotlin.
 dependency, check `./gradlew :app:dependencies` for what it drags in, and say in
 the pull request what it cost.
 
+**A correct manifest is not sufficient for the app to be offered.** Lawnchair
+filters discovered overlay providers through a signature whitelist in
+`FeedBridge.kt`, and an unlisted package fails it unless the user enables
+`pref_ignoreFeedWhitelist` (app drawer → type `/lawnchairdebug` → Debug menu →
+Ignore feed whitelist). Before debugging the binder path, check that switch —
+"the app does not appear in the provider list" is far more often this than a bug
+here. See the README for the exact code path.
+
 **Verifying the −1 screen needs a device.** There is no emulator path for this:
 it requires a launcher that offers a feed-provider setting (Lawnchair, Omega, and
 other Launcher3 forks), with this app selected in it. `PreviewActivity` runs the

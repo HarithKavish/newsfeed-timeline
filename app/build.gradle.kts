@@ -7,6 +7,11 @@ android {
     namespace = "com.harithkavish.newsfeed"
     compileSdk = 34
 
+    // Without this the output is "app-debug.apk" for every module in every
+    // project, which is useless the moment it leaves the build directory and
+    // lands in a downloads folder next to three other app-debug.apk files.
+    base.archivesName = "newsfeed-timeline"
+
     defaultConfig {
         applicationId = "com.harithkavish.newsfeed"
         // 26 is the floor for the launcher-overlay protocol in practice: every
