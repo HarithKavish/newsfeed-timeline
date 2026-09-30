@@ -66,9 +66,23 @@ To point at a local engine instead of the deployed worker, change
 
 ## Selecting it as the −1 screen
 
-This needs a launcher that lets you choose a feed provider. Launcher3 forks do —
-**Lawnchair**, **Omega**, and others; the stock Pixel launcher is hardwired to the
-Google app and cannot be repointed.
+**This requires replacing your home screen.** Only launchers that enumerate feed
+providers can offer this app, and no stock launcher does:
+
+| Launcher | Can select this app? |
+|---|---|
+| Lawnchair, Omega, Neo Launcher (Launcher3 forks) | Yes — see the whitelist step below |
+| Xiaomi HyperOS / MIUI | **No.** The −1 screen is a fixed choice between App Vault, Google Discover, and off. Third-party providers are not enumerated at all. |
+| Pixel launcher | **No.** Hardwired to the Google app. |
+| Samsung One UI | **No.** Fixed to Google Discover or off. |
+
+A stock launcher binds the Google app's overlay service by package name rather
+than discovering providers, so there is no list for this app to appear in. That
+is a property of those launchers, not something an app can opt into.
+
+If you are not willing to change launcher, the app still works — open it from
+Settings → Apps → Newsfeed Timeline and use **Preview the feed**. You get the
+same feed in an ordinary window; what you do not get is the −1 panel.
 
 1. Install the APK. It will not appear in your app drawer — that is correct.
 2. **Lawnchair only, and you cannot skip this:** open the app drawer, type
