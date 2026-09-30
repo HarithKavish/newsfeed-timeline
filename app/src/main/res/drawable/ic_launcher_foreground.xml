@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A feed mark: three stacked rules of decreasing length, the shape of a story
+  list. Drawn in the accent, on the accent-tinted background below.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#F4F9FB"
+        android:pathData="M34,38h40a3,3 0 0 1 0,6h-40a3,3 0 0 1 0,-6z" />
+    <path
+        android:fillColor="#F4F9FB"
+        android:pathData="M34,51h40a3,3 0 0 1 0,6h-40a3,3 0 0 1 0,-6z" />
+    <path
+        android:fillColor="#9EF4F9FB"
+        android:pathData="M34,64h24a3,3 0 0 1 0,6h-24a3,3 0 0 1 0,-6z" />
+</vector>

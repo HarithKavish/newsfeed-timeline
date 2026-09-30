@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- The feed is fetched over HTTPS from the Timeline news worker. That is
+         the only network this app does, and the only permission it asks for. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Newsfeed">
+
+        <!--
+          The front door, and the only activity with a MAIN filter.
+
+          CATEGORY_INFO instead of CATEGORY_LAUNCHER is the whole trick: an app
+          with no LAUNCHER activity gets no icon in the app drawer, while
+          PackageManager.getLaunchIntentForPackage() still resolves an INFO
+          activity, which is what Settings > Apps > App info uses for its Open
+          button. So the app is reachable from Settings and nowhere else —
+          which is correct for something that is a feed provider rather than an
+          app you open.
+        -->
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Newsfeed.Settings">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.INFO" />
+            </intent-filter>
+        </activity>
+
+        <!-- Reached only from the settings screen. No MAIN filter, so no icon. -->
+        <activity
+            android:name=".ui.PreviewActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+
+        <!-- Reached by tapping a story, from the panel or the preview. -->
+        <activity
+            android:name=".ui.TopicActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:excludeFromRecents="false" />
+
+        <!--
+          The -1 screen provider.
+
+          A launcher offering a feed panel binds to a service with this action
+          and a data URI of app://<its-package>:<its-uid>, then speaks
+          ILauncherOverlay over the returned binder. Both the action and the
+          scheme have to match or the launcher will not list this app as a
+          choice at all.
+
+          Exported by necessity: the caller is another app. It is the launcher
+          that supplies the window token this panel attaches to, so a caller
+          that is not a launcher gets a panel with nothing to attach to.
+        -->
+        <service
+            android:name=".overlay.LauncherOverlayService"
+            android:exported="true"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="com.android.launcher3.WINDOW_OVERLAY" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="app" />
+            </intent-filter>
+        </service>
+
+    </application>
+
+</manifest>

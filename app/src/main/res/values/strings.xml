@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Newsfeed Timeline</string>
+
+    <string name="feed_heading">Discover</string>
+    <string name="feed_all">Top stories</string>
+    <string name="refresh">Refresh</string>
+
+    <string name="state_loading">Loading the feed\u2026</string>
+    <string name="state_empty">No stories in this category yet.</string>
+    <string name="state_error">Couldn\'t reach the news engine. Showing what was cached.</string>
+    <string name="state_error_bare">Couldn\'t reach the news engine.</string>
+    <string name="retry">Try again</string>
+
+    <string name="status_developing">Developing</string>
+
+    <!-- Meta line: "4 outlets · 64 updates · 2h ago" -->
+    <string name="meta_outlets_one">1 outlet</string>
+    <string name="meta_outlets_many">%1$d outlets</string>
+    <string name="meta_updates_one">1 update</string>
+    <string name="meta_updates_many">%1$d updates</string>
+    <string name="meta_separator">\u2009\u00b7\u2009</string>
+
+    <!-- Source row: "BBC News — headline" -->
+    <string name="source_row">%1$s — %2$s</string>
+    <string name="topic_sources">Sources</string>
+    <string name="topic_thread">How it developed</string>
+
+    <string name="settings_title">Newsfeed Timeline</string>
+    <string name="settings_blurb">A Discover-style news feed for your launcher\'s -1 screen, served by the Timeline news engine.</string>
+    <string name="settings_categories">Categories you follow</string>
+    <string name="settings_categories_hint">Follow everything, or pick the tiers you want. New categories added to the engine appear here on their own.</string>
+    <string name="settings_setup">Setting it up</string>
+    <string name="settings_setup_body">This app has no home-screen icon on purpose \u2014 it is a feed provider, not something you open. Choose it in your launcher\'s settings as the feed or \u22121 screen provider, then swipe right from the first home screen.</string>
+    <string name="settings_preview">Preview the feed</string>
+    <string name="settings_engine">Engine</string>
+    <string name="settings_open_source">Open the source article</string>
+</resources>
