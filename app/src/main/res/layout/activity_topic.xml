@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/space_lg">
+
+            <TextView
+                android:id="@+id/category"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_pill"
+                android:paddingStart="@dimen/space_sm"
+                android:paddingEnd="@dimen/space_sm"
+                android:paddingTop="@dimen/space_3xs"
+                android:paddingBottom="@dimen/space_3xs"
+                android:textAllCaps="true"
+                android:textColor="@color/accent"
+                android:textSize="@dimen/text_meta"
+                android:textStyle="bold"
+                tools:text="International" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:lineSpacingMultiplier="1.25"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_heading"
+                android:textStyle="bold"
+                tools:text="A topic title" />
+
+            <TextView
+                android:id="@+id/meta"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xs"
+                android:textColor="@color/muted"
+                android:textSize="@dimen/text_meta"
+                tools:text="4 outlets · 64 updates · 2h ago" />
+
+            <TextView
+                android:id="@+id/thread_heading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_xl"
+                android:text="@string/topic_thread"
+                android:textColor="@color/text"
+                android:textSize="@dimen/text_title"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/thread"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/space_sm"
+                android:orientation="vertical" />
+
+            <TextView
+                android:id="@+id/state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/space_2xl"
+                android:textColor="@color/muted"
+                android:textSize="@dimen/text_body"
+                tools:text="@string/state_loading" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
