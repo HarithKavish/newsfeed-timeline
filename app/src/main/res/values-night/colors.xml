@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The dark token swap, from :root[data-theme='dark'] in the shared design
+  system's tokens/colors.css. Same names, same meaning, different values:
+  a full swap, not a tint of the light set.
+-->
+<resources>
+
+    <color name="bg">#0b1014</color>
+    <color name="bg_accent">#11181d</color>
+    <!-- rgba(17,24,29,0.86) -->
+    <color name="surface">#DB11181D</color>
+    <color name="surface_strong">#121a1f</color>
+    <!-- rgba(24,33,39,0.72) -->
+    <color name="surface_soft">#B8182127</color>
+
+    <color name="text">#eef2f4</color>
+    <color name="muted">#a4afb6</color>
+
+    <!-- rgba(255,255,255,0.11) -->
+    <color name="border">#1CFFFFFF</color>
+
+    <color name="accent">#cedfe6</color>
+    <color name="accent_strong">#f3f8fa</color>
+    <!-- rgba(206,223,230,0.08) -->
+    <color name="pill_bg">#14CEDFE6</color>
+    <color name="text_on_accent">#0b1014</color>
+
+    <!-- rgba(11,16,20,0.62) -->
+    <color name="scrim">#9E0B1014</color>
+
+    <color name="status_developing">#cedfe6</color>
+
+</resources>

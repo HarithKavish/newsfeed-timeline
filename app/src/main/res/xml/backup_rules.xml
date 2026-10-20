@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Followed categories are worth restoring onto a new device. The cached feed is
+  not: it is ephemeral news that re-fetches in one request, and restoring a
+  stale copy would show yesterday's stories as though they were current.
+
+  Naming an include is what excludes everything else, so the cache needs no
+  exclude rule of its own.
+-->
+<full-backup-content>
+    <include domain="sharedpref" path="newsfeed.xml" />
+</full-backup-content>

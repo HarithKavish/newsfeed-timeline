@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One topic. The engine has no images, so the card is typographic: what
+  happened, who reported it, how far along it is. Nothing here invents a field
+  the engine does not serve.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/space_xs"
+    android:layout_marginEnd="@dimen/space_xs"
+    android:layout_marginBottom="@dimen/gap_grid"
+    android:background="@drawable/bg_card"
+    android:orientation="vertical"
+    android:padding="@dimen/card_padding"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="@dimen/space_sm">
+
+        <TextView
+            android:id="@+id/category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_pill"
+            android:paddingStart="@dimen/space_sm"
+            android:paddingEnd="@dimen/space_sm"
+            android:paddingTop="@dimen/space_3xs"
+            android:paddingBottom="@dimen/space_3xs"
+            android:textAllCaps="true"
+            android:textColor="@color/accent"
+            android:textSize="@dimen/text_meta"
+            android:textStyle="bold"
+            tools:text="International" />
+
+        <TextView
+            android:id="@+id/developing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_xs"
+            android:text="@string/status_developing"
+            android:textAllCaps="true"
+            android:textColor="@color/status_developing"
+            android:textSize="@dimen/text_meta"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1.25"
+        android:maxLines="4"
+        android:ellipsize="end"
+        android:textColor="@color/text"
+        android:textSize="@dimen/text_title"
+        tools:text="Ukrainians are losing more sleep, shopping for food is becoming harder and travel is often fraught with risk." />
+
+    <TextView
+        android:id="@+id/meta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_sm"
+        android:textColor="@color/muted"
+        android:textSize="@dimen/text_meta"
+        tools:text="4 outlets · 64 updates · 2h ago" />
+
+</LinearLayout>

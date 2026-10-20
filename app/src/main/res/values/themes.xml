@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Plain platform themes. No AppCompat and no Material: the app draws a feed
+      and a settings page, both of which are ordinary views, and either library
+      would cost more bytes and more startup than the two of them together.
+      DeviceDefault follows the system dark setting, which is what makes
+      values-night/colors.xml apply.
+    -->
+    <style name="Theme.Newsfeed" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="android:textColorPrimary">@color/text</item>
+        <item name="android:textColorSecondary">@color/muted</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.Newsfeed.Settings" parent="Theme.Newsfeed" />
+</resources>

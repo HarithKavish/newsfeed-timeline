@@ -66,14 +66,60 @@ To point at a local engine instead of the deployed worker, change
 
 ## Selecting it as the −1 screen
 
-This needs a launcher that lets you choose a feed provider. Launcher3 forks do —
-**Lawnchair**, **Omega**, and others; the stock Pixel launcher is hardwired to the
-Google app and cannot be repointed.
+**This requires replacing your home screen.** Only launchers that enumerate feed
+providers can offer this app, and no stock launcher does:
+
+| Launcher | Can select this app? |
+|---|---|
+| Lawnchair, Omega, Neo Launcher (Launcher3 forks) | Yes — see the whitelist step below |
+| Xiaomi HyperOS / MIUI | **No.** The −1 screen is a fixed choice between App Vault, Google Discover, and off. Third-party providers are not enumerated at all. |
+| Pixel launcher | **No.** Hardwired to the Google app. |
+| Samsung One UI | **No.** Fixed to Google Discover or off. |
+
+A stock launcher binds the Google app's overlay service by package name rather
+than discovering providers, so there is no list for this app to appear in. That
+is a property of those launchers, not something an app can opt into.
+
+If you are not willing to change launcher, the app still works — open it from
+Settings → Apps → Newsfeed Timeline and use **Preview the feed**. You get the
+same feed in an ordinary window; what you do not get is the −1 panel.
 
 1. Install the APK. It will not appear in your app drawer — that is correct.
-2. In your launcher's settings, find the feed / −1 screen / "minus one page"
+2. **Lawnchair only, and you cannot skip this:** open the app drawer, type
+   `/lawnchairdebug` into the search box, then go to Lawnchair Settings →
+   **Debug menu** → enable **Ignore feed whitelist**.
+3. In your launcher's settings, find the feed / −1 screen / "minus one page"
    provider setting and choose **Newsfeed Timeline**.
-3. Restart the launcher if it asks, then swipe right from the first home screen.
+4. Restart the launcher if it asks, then swipe right from the first home screen.
+
+### Why step 2 exists
+
+Lawnchair does not list every app that offers the overlay. `FeedBridge.kt`
+discovers them correctly, then filters the list through a hardcoded signature
+whitelist:
+
+```kotlin
+override val signatureHash = whitelist[packageName]?.toInt() ?: -1
+override fun isSigned(): Boolean {
+    ...
+    return ignoreWhitelist || signatureHash != -1 && super.isSigned()
+}
+```
+
+A package that is not in that map gets `signatureHash = -1`, so `isSigned()`
+collapses to whatever `ignoreWhitelist` is — and `pref_ignoreFeedWhitelist`
+defaults to `false`. The app is therefore filtered out **before** it can be
+offered, no matter what its manifest says. Nothing in this repository can change
+that; the gate is in the launcher.
+
+The whitelist is `com.google.android.googlequicksearchbox`, the Pixel launcher,
+Lawnfeed, Smartspacer, HomeFeeder, `amirz.aidlbridge`, `launcher.libre.dev` and
+`com.saulhdev.neofeed`. The last of those is keyed to
+`getSignatureHash(context, "com.saulhdev.neofeed")` — the signature of whatever
+is installed under that name — so adopting that `applicationId` would satisfy the
+check without the debug menu. This repository does not do that: it is another
+project's package name, it would collide with the real Neo Feed on any device
+that has it, and it trades a two-tap setting for a permanent lie about identity.
 
 To change categories afterwards: **Settings → Apps → Newsfeed Timeline → Open**.
 

@@ -1,0 +1,13 @@
+# Normalise to LF in the repository; let Git decide the working-copy ending.
+* text=auto
+
+# gradlew is executed by /bin/sh on Linux CI. With CRLF endings the shebang
+# line ends in \r and the kernel looks for an interpreter named "sh\r", which
+# fails with a bare "not found" that reads as a missing shell. Pin it to LF.
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Binary: never touch the line endings.
+*.jar binary
+*.png binary
+*.apk binary

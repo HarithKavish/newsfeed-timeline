@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The shared design system's colour tokens, expressed as Android resources.
+
+  These values are not chosen here. They are HarithKavish/design-system
+  tokens/colors.css, converted from CSS rgba() to Android #AARRGGBB. The light
+  set is this file; the dark set is values-night/colors.xml, which is the same
+  token names with the dark swap applied, exactly as the CSS does on
+  :root[data-theme='dark'].
+
+  Why a copy exists at all is recorded in GOVERNANCE.md under declared
+  exceptions: the design system publishes CSS and JSX, and a native Android
+  surface can consume neither. Nothing here may be re-picked locally. When a
+  token changes upstream, it changes here.
+-->
+<resources>
+
+    <!-- Base surfaces -->
+    <color name="bg">#f4f9fb</color>
+    <color name="bg_accent">#e4eef2</color>
+    <!-- rgba(255,255,255,0.86) -->
+    <color name="surface">#DBFFFFFF</color>
+    <color name="surface_strong">#ffffff</color>
+    <!-- rgba(255,255,255,0.58) -->
+    <color name="surface_soft">#94FFFFFF</color>
+
+    <!-- Ink -->
+    <color name="text">#182028</color>
+    <color name="muted">#5a646d</color>
+
+    <!-- Line: rgba(24,32,40,0.11) -->
+    <color name="border">#1C182028</color>
+
+    <!-- Accent: the deep slate-teal of the HK mark -->
+    <color name="accent">#123f50</color>
+    <color name="accent_strong">#081f29</color>
+    <!-- rgba(18,63,80,0.08) -->
+    <color name="pill_bg">#14123f50</color>
+    <color name="text_on_accent">#ffffff</color>
+
+    <!--
+      Scrim. The token exists for exactly this situation: content laid over
+      imagery the system does not control. On the -1 screen that imagery is the
+      reader's wallpaper. rgba(244,249,251,0.62)
+    -->
+    <color name="scrim">#9EF4F9FB</color>
+
+    <!-- Status. Developing stories carry the accent; nothing invents a hue. -->
+    <color name="status_developing">#123f50</color>
+
+</resources>
