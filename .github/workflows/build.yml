@@ -56,9 +56,6 @@ jobs:
       - name: Assemble debug APK
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
-      - name: Report APK size
-        run: ./gradlew reportApkSize --no-daemon
-
       - name: Locate APK
         id: locate
         run: |

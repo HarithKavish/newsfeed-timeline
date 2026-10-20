@@ -1,5 +1,6 @@
 package com.harithkavish.newsfeed.ui
 
+import java.time.Instant
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
