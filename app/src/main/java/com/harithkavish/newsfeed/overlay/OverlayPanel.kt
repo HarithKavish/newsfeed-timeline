@@ -188,6 +188,7 @@ internal class OverlayPanel(private val context: Context) {
     }
 
     private fun applyProgress(value: Float) {
+        val wasOpen = progress >= 1f
         progress = value
         val view = feedView ?: return
 
@@ -214,7 +215,11 @@ internal class OverlayPanel(private val context: Context) {
         // the surface actually in front of the reader.
         setFocusable(value >= FOCUS_THRESHOLD && !dragging)
 
-        if (value >= 1f) view.onPanelOpened()
+        // Fire the open hook once, on the transition to fully open, not on
+        // every progress tick that lands at 1f. A launcher that reports
+        // progress 1.0 repeatedly would otherwise re-run the quiet refresh
+        // each time.
+        if (value >= 1f && !wasOpen) view.onPanelOpened()
     }
 
     /**

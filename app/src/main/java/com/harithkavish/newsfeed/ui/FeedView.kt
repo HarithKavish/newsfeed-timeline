@@ -45,6 +45,29 @@ class FeedView @JvmOverloads constructor(
     private var loadingMore = false
     private var exhausted = false
 
+    /**
+     * How many topics the engine has served for the current category, before
+     * the follows filter removes any. The next page is requested from this
+     * count, not from [TopicAdapter.getItemCount]: the engine's offset counts
+     * unfiltered items, so using the displayed count would re-request topics
+     * the filter already dropped once the reader unfollows a category.
+     */
+    private var fetchedCount = 0
+
+    /**
+     * Consecutive page failures. Paging stops after a couple of failures
+     * rather than on the first, so one transient error does not end paging
+     * for the rest of the session; a successful load or page resets it.
+     */
+    private var pagingStrikes = 0
+
+    /**
+     * Bumped on every [load]. A result that arrives carrying an older
+     * generation belongs to a category the reader has already left, so it is
+     * dropped instead of replacing the list under a newly selected chip.
+     */
+    private var loadGeneration = 0
+
     /** Set by the overlay panel so the feed can ask to be dismissed. */
     var onCloseRequested: (() -> Unit)? = null
 
@@ -110,11 +133,15 @@ class FeedView @JvmOverloads constructor(
 
     private fun load(quiet: Boolean = false) {
         exhausted = false
+        pagingStrikes = 0
+        val generation = ++loadGeneration
         if (!quiet && adapter.itemCount == 0) showState(R.string.state_loading)
 
         repo.load(
             category = selected,
             onResult = { topics, fresh ->
+                if (generation != loadGeneration) return@onResult
+                fetchedCount = topics.size
                 val visible = topics.filter { prefs.isFollowed(it.category) }
                 adapter.submit(visible)
                 when {
@@ -124,6 +151,7 @@ class FeedView @JvmOverloads constructor(
                 }
             },
             onError = {
+                if (generation != loadGeneration) return@onError
                 if (adapter.itemCount == 0) {
                     showState(R.string.state_error_bare)
                 } else {
@@ -141,17 +169,20 @@ class FeedView @JvmOverloads constructor(
 
         repo.loadMore(
             category = selected,
-            offset = adapter.itemCount,
+            offset = fetchedCount,
             onResult = { topics, hasMore ->
                 loadingMore = false
                 exhausted = !hasMore
+                pagingStrikes = 0
+                fetchedCount += topics.size
                 adapter.append(topics.filter { prefs.isFollowed(it.category) })
             },
             onError = {
                 loadingMore = false
-                // Stop paging on a failure rather than retrying on every
-                // scroll event, which would hammer the engine while offline.
-                exhausted = true
+                // Stop paging after a couple of consecutive failures rather
+                // than retrying on every scroll event, which would hammer the
+                // engine while offline. A later successful load resets this.
+                if (++pagingStrikes >= PAGING_STRIKE_LIMIT) exhausted = true
             },
         )
     }
@@ -212,6 +243,9 @@ class FeedView @JvmOverloads constructor(
     private companion object {
         /** How close to the end a scroll gets before the next page is asked for. */
         const val PREFETCH_DISTANCE = 5
+
+        /** Consecutive paging failures tolerated before paging gives up. */
+        const val PAGING_STRIKE_LIMIT = 2
     }
 }
 

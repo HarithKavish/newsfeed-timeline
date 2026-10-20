@@ -7,7 +7,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
-import java.util.concurrent.atomic.AtomicBoolean
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Everything the feed needs, from one engine.
@@ -32,7 +32,14 @@ class FeedRepository private constructor(context: Context) {
     var categories: List<Category> = FALLBACK_CATEGORIES
         private set
 
-    private val refreshing = AtomicBoolean(false)
+    /**
+     * Categories with a first-page fetch in flight. Tracked per key so that
+     * switching chips while a refresh runs still fetches the new category
+     * instead of being swallowed by another category's in-flight request.
+     * Cleared on the io thread before the result is posted, so a quick answer
+     * frees the slot while the caller is still processing it.
+     */
+    private val refreshing = ConcurrentHashMap<String, Unit>()
 
     /**
      * Topics for [category] (null = every category, newest first), served from
@@ -41,6 +48,10 @@ class FeedRepository private constructor(context: Context) {
      * [onResult] may therefore be called twice: once with `fresh = false` for
      * the cached copy, once with `fresh = true` when the network answers. It is
      * not called with the cached copy when there is none.
+     *
+     * A new call for the same category while one is in flight is a duplicate
+     * request for content already coming, so it is dropped after the cache
+     * serve; the in-flight call's result covers it.
      */
     fun load(
         category: String?,
@@ -50,25 +61,22 @@ class FeedRepository private constructor(context: Context) {
         val key = cacheKey(category)
 
         cache.read(key)?.let { cached ->
-            runCatching { parseTopics(cached) }
-                .getOrNull()
-                ?.takeIf { it.isNotEmpty() }
-                ?.let { onResult(it, false) }
+            serveFromCache(cached)?.let { onResult(it, false) }
         }
 
-        if (!refreshing.compareAndSet(false, true)) return
+        if (refreshing.putIfAbsent(key, Unit) != null) return
 
         io.execute {
             try {
                 val page = NewsApi.topics(category = category, offset = 0, limit = PAGE_SIZE)
                 cache.write(key, JSONObject().put("items", topicsToJson(page.items)).toString())
+                refreshing.remove(key)
                 main.post {
-                    refreshing.set(false)
                     onResult(page.items, true)
                 }
             } catch (t: Throwable) {
+                refreshing.remove(key)
                 main.post {
-                    refreshing.set(false)
                     onError(t)
                 }
             }
@@ -142,6 +150,16 @@ class FeedRepository private constructor(context: Context) {
     }
 
     private fun cacheKey(category: String?) = "topics-" + (category ?: "all")
+
+    /**
+     * The cached copy, or null when it is absent or unusable. Parsing happens
+     * off the main thread only in the io path; from [load] it is fine on the
+     * caller's thread because every caller is already doing view work there.
+     */
+    private fun serveFromCache(body: String): List<Topic>? =
+        runCatching { parseTopics(body) }
+            .getOrNull()
+            ?.takeIf { it.isNotEmpty() }
 
     private fun parseTopics(body: String): List<Topic> =
         JSONObject(body).optJSONArray("items")?.let { Topic.listFrom(it) } ?: emptyList()
