@@ -62,13 +62,14 @@ class FeedView @JvmOverloads constructor(
     private var pagingStrikes = 0
 
     /**
-     * The category whose page request is in flight, or null when none is.
-     * [load] frees the paging slot only when it belongs to a category the
-     * reader has left; freeing it for the current category would let a scroll
-     * start a second request for the same offset while the first is still in
-     * flight, and both would append.
+     * Bumped by every [load]. A page request captures the value at its start;
+     * when its callbacks run with a token that no longer matches, the feed has
+     * reloaded since -- the reader switched category, or the panel reopened --
+     * and the result belongs to a list nobody is looking at. Those callbacks
+     * return before touching [loadingMore], [fetchedCount] or the adapter, so
+     * a late answer can never clear the paging guard a newer request owns.
      */
-    private var pagingCategory: String? = null
+    private var pagingToken = 0L
 
     /** Set by the overlay panel so the feed can ask to be dismissed. */
     var onCloseRequested: (() -> Unit)? = null
@@ -136,12 +137,12 @@ class FeedView @JvmOverloads constructor(
     private fun load(quiet: Boolean = false) {
         exhausted = false
         pagingStrikes = 0
-        // A page request belonging to a category the reader has left is
-        // dead weight: its result would be dropped anyway. Free the slot so
-        // the new category can page immediately. One for the current category
-        // is left alone -- unblocking it would double-fetch the same offset.
-        if (pagingCategory != null && pagingCategory != selected) loadingMore = false
-        pagingCategory = null
+        // Any page request still in flight predates this load, so its result
+        // would land on a list this load is about to replace. The token makes
+        // its callbacks inert; the slot is freed unconditionally because no
+        // live request owns it any more.
+        pagingToken++
+        loadingMore = false
         if (!quiet && adapter.itemCount == 0) showState(R.string.state_loading)
         val requestCategory = selected
 
@@ -175,14 +176,14 @@ class FeedView @JvmOverloads constructor(
         if (loadingMore || exhausted || adapter.itemCount == 0) return
         loadingMore = true
         val requestCategory = selected
-        pagingCategory = requestCategory
+        val requestToken = pagingToken
 
         repo.loadMore(
             category = requestCategory,
             offset = fetchedCount,
             onResult = { topics, hasMore ->
+                if (requestToken != pagingToken) return@onResult
                 loadingMore = false
-                pagingCategory = null
                 if (requestCategory != selected) return@onResult
                 exhausted = !hasMore
                 pagingStrikes = 0
@@ -190,8 +191,8 @@ class FeedView @JvmOverloads constructor(
                 adapter.append(topics.filter { prefs.isFollowed(it.category) })
             },
             onError = {
+                if (requestToken != pagingToken) return@onError
                 loadingMore = false
-                pagingCategory = null
                 if (requestCategory != selected) return@onError
                 // Stop paging after a couple of consecutive failures rather
                 // than retrying on every scroll event, which would hammer the
