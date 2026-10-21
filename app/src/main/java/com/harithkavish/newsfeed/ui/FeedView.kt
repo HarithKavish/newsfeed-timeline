@@ -148,8 +148,8 @@ class FeedView @JvmOverloads constructor(
 
         repo.load(
             category = requestCategory,
-            onResult = onResult@{ topics, fresh ->
-                if (selected != requestCategory) return@onResult
+            onResult = loadResult@{ topics, fresh ->
+                if (selected != requestCategory) return@loadResult
                 fetchedCount = topics.size
                 val visible = topics.filter { prefs.isFollowed(it.category) }
                 adapter.submit(visible)
@@ -159,8 +159,8 @@ class FeedView @JvmOverloads constructor(
                     else -> Unit // cached copy was empty; wait for the network
                 }
             },
-            onError = onError@{ _ ->
-                if (selected != requestCategory) return@onError
+            onError = loadError@{ _ ->
+                if (selected != requestCategory) return@loadError
                 if (adapter.itemCount == 0) {
                     showState(R.string.state_error_bare)
                 } else {
@@ -181,19 +181,19 @@ class FeedView @JvmOverloads constructor(
         repo.loadMore(
             category = requestCategory,
             offset = fetchedCount,
-            onResult = onResult@{ topics, hasMore ->
-                if (requestToken != pagingToken) return@onResult
+            onResult = loadResult@{ topics, hasMore ->
+                if (requestToken != pagingToken) return@loadResult
                 loadingMore = false
-                if (requestCategory != selected) return@onResult
+                if (requestCategory != selected) return@loadResult
                 exhausted = !hasMore
                 pagingStrikes = 0
                 fetchedCount += topics.size
                 adapter.append(topics.filter { prefs.isFollowed(it.category) })
             },
-            onError = onError@{ _ ->
-                if (requestToken != pagingToken) return@onError
+            onError = loadError@{ _ ->
+                if (requestToken != pagingToken) return@loadError
                 loadingMore = false
-                if (requestCategory != selected) return@onError
+                if (requestCategory != selected) return@loadError
                 // Stop paging after a couple of consecutive failures rather
                 // than retrying on every scroll event, which would hammer the
                 // engine while offline. A later successful load resets this.
