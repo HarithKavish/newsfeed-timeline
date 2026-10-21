@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      DayNight theme for API 29+ — follows system dark setting.
+      values-night/colors.xml applies automatically.
+    -->
+    <style name="Theme.Newsfeed" parent="@android:style/Theme.DeviceDefault.DayNight">
+        <item name="android:colorBackground">@color/bg</item>
+        <item name="android:textColorPrimary">@color/text</item>
+        <item name="android:textColorSecondary">@color/muted</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.Newsfeed.Settings" parent="Theme.Newsfeed" />
+</resources>
