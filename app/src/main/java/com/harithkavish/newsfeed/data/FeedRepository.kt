@@ -21,9 +21,9 @@ import java.util.concurrent.ConcurrentHashMap
 class FeedRepository private constructor(context: Context) {
 
     private val app = context.applicationContext
-    internal val cache = FeedCache(app)
-    internal val main = Handler(Looper.getMainLooper())
-    internal val io = Executors.newSingleThreadExecutor(
+    private val cache = FeedCache(app)
+    private val main = Handler(Looper.getMainLooper())
+    private val io = Executors.newSingleThreadExecutor(
         ThreadFactory { r -> Thread(r, "newsfeed-io").apply { isDaemon = true } },
     )
 
@@ -39,7 +39,7 @@ class FeedRepository private constructor(context: Context) {
      * Cleared on the io thread before the result is posted, so a quick answer
      * frees the slot while the caller is still processing it.
      */
-    internal val refreshing = ConcurrentHashMap<String, Unit>()
+    private val refreshing = ConcurrentHashMap<String, Unit>()
 
     /**
      * Topics for [category] (null = every category, newest first), served from
@@ -149,27 +149,27 @@ class FeedRepository private constructor(context: Context) {
         }
     }
 
-    internal fun cacheKey(category: String?) = "topics-" + (category ?: "all")
+    private fun cacheKey(category: String?) = "topics-" + (category ?: "all")
 
     /**
      * The cached copy, or null when it is absent or unusable. Parsing happens
      * off the main thread only in the io path; from [load] it is fine on the
      * caller's thread because every caller is already doing view work there.
      */
-    internal fun serveFromCache(body: String): List<Topic>? =
+    private fun serveFromCache(body: String): List<Topic>? =
         runCatching { parseTopics(body) }
             .getOrNull()
             ?.takeIf { it.isNotEmpty() }
 
-    internal fun parseTopics(body: String): List<Topic> =
+    private fun parseTopics(body: String): List<Topic> =
         JSONObject(body).optJSONArray("items")?.let { Topic.listFrom(it) } ?: emptyList()
 
-    internal fun parseCategories(body: String): List<Category> {
+    private fun parseCategories(body: String): List<Category> {
         val arr = JSONArray(body)
         return Category.sort((0 until arr.length()).map { arr.optString(it) }.filter { it.isNotBlank() })
     }
 
-    internal fun topicsToJson(topics: List<Topic>): JSONArray {
+    private fun topicsToJson(topics: List<Topic>): JSONArray {
         val arr = JSONArray()
         topics.forEach { t ->
             arr.put(
