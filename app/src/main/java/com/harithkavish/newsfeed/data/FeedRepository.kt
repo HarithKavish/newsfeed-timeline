@@ -53,10 +53,10 @@ class FeedRepository private constructor(context: Context) {
      * request for content already coming, so it is dropped after the cache
      * serve; the in-flight call's result covers it.
      */
-    fun load(
+    inline fun load(
         category: String?,
-        onResult: (topics: List<Topic>, fresh: Boolean) -> Unit,
-        onError: (Throwable) -> Unit,
+        crossinline onResult: (topics: List<Topic>, fresh: Boolean) -> Unit,
+        crossinline onError: (Throwable) -> Unit,
     ) {
         val key = cacheKey(category)
 
@@ -84,11 +84,11 @@ class FeedRepository private constructor(context: Context) {
     }
 
     /** One more page, appended by the caller. Never served from cache. */
-    fun loadMore(
+    inline fun loadMore(
         category: String?,
         offset: Int,
-        onResult: (topics: List<Topic>, hasMore: Boolean) -> Unit,
-        onError: (Throwable) -> Unit,
+        crossinline onResult: (topics: List<Topic>, hasMore: Boolean) -> Unit,
+        crossinline onError: (Throwable) -> Unit,
     ) {
         io.execute {
             try {
