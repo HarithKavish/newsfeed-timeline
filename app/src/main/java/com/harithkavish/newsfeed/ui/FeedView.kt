@@ -159,7 +159,7 @@ class FeedView @JvmOverloads constructor(
                     else -> Unit // cached copy was empty; wait for the network
                 }
             },
-            onError = onError@{ ->
+            onError = onError@{ _ ->
                 if (selected != requestCategory) return@onError
                 if (adapter.itemCount == 0) {
                     showState(R.string.state_error_bare)
@@ -190,7 +190,7 @@ class FeedView @JvmOverloads constructor(
                 fetchedCount += topics.size
                 adapter.append(topics.filter { prefs.isFollowed(it.category) })
             },
-            onError = onError@{ ->
+            onError = onError@{ _ ->
                 if (requestToken != pagingToken) return@onError
                 loadingMore = false
                 if (requestCategory != selected) return@onError
