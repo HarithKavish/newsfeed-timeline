@@ -148,7 +148,7 @@ class FeedView @JvmOverloads constructor(
 
         repo.load(
             category = requestCategory,
-            onResult = onResult@{ topics, fresh ->
+            onResult = { topics, fresh ->
                 if (selected != requestCategory) return@onResult
                 fetchedCount = topics.size
                 val visible = topics.filter { prefs.isFollowed(it.category) }
@@ -159,7 +159,7 @@ class FeedView @JvmOverloads constructor(
                     else -> Unit // cached copy was empty; wait for the network
                 }
             },
-            onError = onError@{ _ ->
+            onError = { _ ->
                 if (selected != requestCategory) return@onError
                 if (adapter.itemCount == 0) {
                     showState(R.string.state_error_bare)
@@ -181,7 +181,7 @@ class FeedView @JvmOverloads constructor(
         repo.loadMore(
             category = requestCategory,
             offset = fetchedCount,
-            onResult = onResult@{ topics, hasMore ->
+            onResult = { topics, hasMore ->
                 if (requestToken != pagingToken) return@onResult
                 loadingMore = false
                 if (requestCategory != selected) return@onResult
@@ -190,7 +190,7 @@ class FeedView @JvmOverloads constructor(
                 fetchedCount += topics.size
                 adapter.append(topics.filter { prefs.isFollowed(it.category) })
             },
-            onError = onError@{ _ ->
+            onError = { _ ->
                 if (requestToken != pagingToken) return@onError
                 loadingMore = false
                 if (requestCategory != selected) return@onError
